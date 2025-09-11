@@ -5,5 +5,5 @@ namespace BT.Application.Services.Interface;
 
 public interface IAuthenticationService
 {
-    string GenerateAccessToken(Account account,  ERole roleName);
+    string GenerateAccessToken(Account account);
 }

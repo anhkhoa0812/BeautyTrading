@@ -19,7 +19,7 @@ public class AuthenticationService : IAuthenticationService
     {
         _jwtSettings = jwtSettings.Value;
     }
-    public string GenerateAccessToken(Account account, ERole roleName)
+    public string GenerateAccessToken(Account account)
     {
         var tokenhandler = new JwtSecurityTokenHandler();
         var tokenkey = Encoding.UTF8.GetBytes(_jwtSettings.SecurityKey!);
@@ -31,7 +31,7 @@ public class AuthenticationService : IAuthenticationService
                 {
                     new Claim("AccountId", account.Id.ToString()),
                     new Claim("Username", account.Username),
-                    new Claim(ClaimTypes.Role, roleName.ToString())
+                    new Claim(ClaimTypes.Role, account.Role.ToString())
                 }
             ),
             Expires = timeExpire,

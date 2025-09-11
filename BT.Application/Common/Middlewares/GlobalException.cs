@@ -44,7 +44,7 @@ public class GlobalException
         var errorResponse = new ApiResponse()
         {
             Status = (int) HttpStatusCode.NotFound,
-            Message = "Lỗi không tìm thấy dữ liệu",
+            Message = "Data not found error",
             Data = ex.Message
         };
         context.Response.ContentType = "application/json";
@@ -66,7 +66,7 @@ public class GlobalException
         var errorResponse = new ApiResponse()
         {
             Status = (int) HttpStatusCode.BadRequest,
-            Message = "Lỗi kiểm tra dữ liệu",
+            Message = "Data validation error",
             Data = errors
         };
         context.Response.ContentType = "application/json";
@@ -81,7 +81,7 @@ public class GlobalException
         var errorResponse = new ApiResponse()
         {
             Status = (int) statusCode,
-            Message = "Lỗi kiểm tra dữ liệu",
+            Message = "Data validation error",
             Data = ex.Message,
         };
         context.Response.ContentType = "application/json";
@@ -96,7 +96,7 @@ public class GlobalException
         var errorResponse = new ApiResponse()
         {
             Status = (int) statusCode,
-            Message = "Một lỗi không mong muốn đã xảy ra",
+            Message = "An unexpected error has occurred",
             Data = ex.Message,
         };
         context.Response.ContentType = "application/json";
