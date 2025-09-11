@@ -2,7 +2,7 @@ using FluentValidation.Results;
 
 namespace BT.Application.Common.Exceptions;
 
-public class ValidationException() : Exception("Một hoặc nhiều lỗi xác thực đã xảy ra.")
+public class ValidationException() : Exception("One or more validation error occured")
 {
     public ValidationException(IEnumerable<ValidationFailure> failures)
         : this()

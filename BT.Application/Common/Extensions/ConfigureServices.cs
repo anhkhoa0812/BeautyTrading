@@ -1,8 +1,11 @@
 using Mediator;
 using BT.Application.Common.Behaviours;
 using BT.Application.Common.Utils;
+using BT.Application.Features.Accounts.Command.CreateAccount;
+using BT.Application.Features.Authentication.Command.Login;
 using BT.Application.Services.Implement;
 using BT.Application.Services.Interface;
+using FluentValidation;
 
 namespace BT.Application.Common.Extensions;
 
@@ -20,8 +23,11 @@ public static class ConfigureServices
             .AddTransient(typeof(IPipelineBehavior<,>), typeof(PerformanceBehaviour<,>))
             .AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
         services.AddScoped(typeof(ValidationUtil<>));
+        services.AddScoped<IValidator<LoginCommand>, LoginCommandValidator>();
+        services.AddScoped<IValidator<CreateAccountCommand>, CreateAccountCommandValidator>();
         services.AddScoped<IClaimService, ClaimService>();
         services.AddScoped<IAuthenticationService, AuthenticationService>();
+        services.AddHttpContextAccessor();
         return services;
     }
 }
