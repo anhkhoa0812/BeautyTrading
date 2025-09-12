@@ -8,6 +8,7 @@ public class Product : EntityAuditBase<Guid>
     public string? Description { get; set; }
     public string ImageUrl { get; set; }
     public Guid CategoryId { get; set; }
+    public bool IsHasVariants { get; set; }
 
     public virtual Category Category { get; set; }
     public virtual ICollection<ProductImage>? ProductImages { get; set; } = new List<ProductImage>();

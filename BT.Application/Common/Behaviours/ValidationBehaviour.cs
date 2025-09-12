@@ -31,11 +31,8 @@ public class ValidationBehaviour<TRequest, TResponse> : IPipelineBehavior<TReque
 
         if (failures.Any())
         {
-            var errors = failures
-                .Select(e => new { e.PropertyName, e.ErrorMessage });
             _logger.Warning("Validation errors occurred for request {RequestName}: {@Errors}", typeof(TRequest).Name, failures);
             throw new ValidationException(failures);
-            
         }
 
         return await next(request, cancellationToken);

@@ -12,4 +12,14 @@ public class ApiEndPointConstant
         public const string Login = AuthenticationEndpoint + "/login";
         public const string Register = AuthenticationEndpoint + "/register";
     }
+
+    public static class Product
+    {
+        public const string ProductEndpoint = ApiEndpoint + "/products";
+    }
+
+    public static class Category
+    {
+        public const string CategoryEndpoint = ApiEndpoint + "/categories";
+    }
 }
