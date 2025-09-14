@@ -6,7 +6,7 @@ using BT.Infrastructure.Persistence;
 using BT.Infrastructure.Repositories.Interface;
 using Mediator;
 
-namespace BT.Application.Features.Products.CreateProduct;
+namespace BT.Application.Features.Products.Command.CreateProduct;
 
 public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand, ApiResponse>
 {

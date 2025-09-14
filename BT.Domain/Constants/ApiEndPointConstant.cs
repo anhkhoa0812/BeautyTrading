@@ -16,6 +16,8 @@ public class ApiEndPointConstant
     public static class Product
     {
         public const string ProductEndpoint = ApiEndpoint + "/products";
+        public const string ProductWithId = ProductEndpoint + "/{id}";
+        public const string ProductWithProductColor = ProductWithId + "/product-colors";
     }
 
     public static class Category

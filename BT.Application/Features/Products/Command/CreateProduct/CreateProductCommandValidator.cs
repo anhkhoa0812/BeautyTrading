@@ -1,6 +1,6 @@
 using FluentValidation;
 
-namespace BT.Application.Features.Products.CreateProduct;
+namespace BT.Application.Features.Products.Command.CreateProduct;
 
 public class CreateProductCommandValidator : AbstractValidator<CreateProductCommand>
 {

@@ -13,4 +13,5 @@ public class Product : EntityAuditBase<Guid>
     public virtual Category Category { get; set; }
     public virtual ICollection<ProductImage>? ProductImages { get; set; } = new List<ProductImage>();
     public virtual ICollection<ProductVariant> ProductVariants { get; set; } = new List<ProductVariant>();
+    public virtual ICollection<ProductColor>? ProductColors { get; set; } = new List<ProductColor>();
 }

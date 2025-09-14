@@ -1,7 +1,7 @@
 using BT.Domain.Models.Common;
 using Mediator;
 
-namespace BT.Application.Features.Products.CreateProduct;
+namespace BT.Application.Features.Products.Command.CreateProduct;
 
 public class CreateProductCommand : IRequest<ApiResponse>
 {
