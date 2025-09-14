@@ -10,6 +10,8 @@ public class CreateProductCommand : IRequest<ApiResponse>
     public IFormFile MainImage { get; set; }
     public Guid CategoryId { get; set; }
     public bool IsHasVariants { get; set; }
+    public IFormFile BannerImage { get; set; }
+    public string? VideoUrl { get; set; }
     public decimal? Price { get; set; }
     public string? Currency { get; set; }
     public int? Stock { get; set; }

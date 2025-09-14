@@ -1,7 +1,7 @@
 using BT.Domain.Models.Common;
 using Mediator;
 
-namespace BT.Application.Features.ProductColors.Query.GetProductById;
+namespace BT.Application.Features.Products.Query.GetProductById;
 
 public class GetProductByIdQuery : IRequest<ApiResponse>
 {

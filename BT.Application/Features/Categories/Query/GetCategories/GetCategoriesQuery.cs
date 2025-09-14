@@ -1,9 +1,9 @@
 using BT.Domain.Models.Common;
 using Mediator;
 
-namespace BT.Application.Features.ProductColors.Query.GetProducts;
+namespace BT.Application.Features.Categories.Query.GetCategories;
 
-public class GetProductsQuery : IRequest<ApiResponse>
+public class GetCategoriesQuery : IRequest<ApiResponse>
 {
     public int Page { get; set; }
     public int Size { get; set; }

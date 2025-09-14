@@ -16,6 +16,10 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
             .HasMaxLength(1000);
         builder.Property(p => p.ImageUrl)
             .IsRequired();
+        builder.Property(p => p.IsHasVariants)
+            .IsRequired();
+        builder.Property(p => p.BannerUrl)
+            .IsRequired();
         builder.HasOne(p => p.Category)
             .WithMany(c => c.Products)
             .HasForeignKey(p => p.CategoryId)
