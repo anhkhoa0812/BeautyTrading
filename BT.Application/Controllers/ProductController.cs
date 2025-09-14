@@ -1,8 +1,8 @@
 using BT.Application.Common.Utils;
 using BT.Application.Common.Validators;
 using BT.Application.Features.ProductColors.Command.CreateProductColor;
-using BT.Application.Features.ProductColors.Query.GetProductById;
-using BT.Application.Features.ProductColors.Query.GetProducts;
+using BT.Application.Features.Products.Query.GetProductById;
+using BT.Application.Features.Products.Query.GetProducts;
 using BT.Application.Features.Products.Command.CreateProduct;
 using BT.Domain.Constants;
 using BT.Domain.Enums;
@@ -75,12 +75,9 @@ public class ProductController : BaseController<ProductController>
         return CreatedAtAction(nameof(CreateProductColor), apiResponse);
     }
 
-    [CustomAuthorize(ERole.Admin)]
     [HttpGet(ApiEndPointConstant.Product.ProductEndpoint)]
     [ProducesResponseType<ApiResponse<IPaginate<GetProductsResponse>>>(StatusCodes.Status200OK)]
     [ProducesResponseType<ApiResponse>(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType<ApiResponse>(StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType<ApiResponse>(StatusCodes.Status403Forbidden)]
     [ProducesResponseType<ApiResponse>(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetProducts([FromQuery] int page = 1, [FromQuery] int size = 30,
         [FromQuery] string? sortBy = null, [FromQuery] bool isAsc = false)
@@ -95,13 +92,10 @@ public class ProductController : BaseController<ProductController>
         var apiResponse = await _mediator.Send(query);
         return Ok(apiResponse);
     }
-    [CustomAuthorize(ERole.Admin)]
     [HttpGet(ApiEndPointConstant.Product.ProductWithId)]
     [ProducesResponseType<ApiResponse<GetProductByIdResponse>>(StatusCodes.Status200OK)]
     [ProducesResponseType<ApiResponse>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType<ApiResponse>(StatusCodes.Status404NotFound)]
-    [ProducesResponseType<ApiResponse>(StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType<ApiResponse>(StatusCodes.Status403Forbidden)]
     [ProducesResponseType<ApiResponse>(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetProductById([FromRoute] Guid id)
     {

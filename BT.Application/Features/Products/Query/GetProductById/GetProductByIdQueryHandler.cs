@@ -1,5 +1,7 @@
 using BT.Application.Common.Exceptions;
+using BT.Application.Services.Interface;
 using BT.Domain.Entities;
+using BT.Domain.Enums;
 using BT.Domain.Models.Common;
 using BT.Domain.Models.Products;
 using BT.Infrastructure.Persistence;
@@ -7,23 +9,28 @@ using BT.Infrastructure.Repositories.Interface;
 using Mediator;
 using Microsoft.EntityFrameworkCore;
 
-namespace BT.Application.Features.ProductColors.Query.GetProductById;
+namespace BT.Application.Features.Products.Query.GetProductById;
 
 public class GetProductByIdQueryHandler : IRequestHandler<GetProductByIdQuery, ApiResponse>
 {
     private readonly IUnitOfWork<BeautyTradingContext> _unitOfWork;
     private readonly ILogger _logger;
+    private readonly IClaimService _claimService;
     
-    public GetProductByIdQueryHandler(IUnitOfWork<BeautyTradingContext> unitOfWork, ILogger logger)
+    public GetProductByIdQueryHandler(IUnitOfWork<BeautyTradingContext> unitOfWork, ILogger logger, IClaimService claimService)
     {
         _unitOfWork = unitOfWork;
         _logger = logger;
+        _claimService = claimService;
     }
     
     public async ValueTask<ApiResponse> Handle(GetProductByIdQuery request, CancellationToken cancellationToken)
     {
+        var role = _claimService.GetRole;
+        
         var product = await _unitOfWork.GetRepository<Product>().SingleOrDefaultAsync(
-            predicate: x => x.Id == request.ProductId,
+            predicate: x => x.Id == request.ProductId 
+                            && (role == nameof(ERole.Admin) || x.ProductVariants.Any(pv => pv.IsActive)),
             include: x => x.Include(x => x.ProductVariants)
                 .Include(x => x.ProductImages)
                 .Include(x => x.ProductColors)

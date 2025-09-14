@@ -35,11 +35,14 @@ public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand,
             Name = request.Name,
             Description = request.Description,
             IsHasVariants = request.IsHasVariants,
-            CategoryId = request.CategoryId
+            CategoryId = request.CategoryId,
+            VideoUrl = request.VideoUrl
         };
         var mainImageUrl = await _uploadService.UploadImageAsync(request.MainImage);
         product.ImageUrl = mainImageUrl;
 
+        var bannerImageUrl = await _uploadService.UploadImageAsync(request.BannerImage);
+        product.BannerUrl = bannerImageUrl;
         if (!product.IsHasVariants)
         {
             if(request.Currency != null && request.Price != null && request.Stock != null)
