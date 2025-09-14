@@ -23,6 +23,7 @@ public static class ConfigureServices
         services.AddScoped<IUnitOfWork<BeautyTradingContext>, UnitOfWork<BeautyTradingContext>>();
         services.AddScoped<BeautyTradingContextSeed>();
         services.Configure<JwtSettings>(configuration.GetSection("JwtSettings"));
+        services.Configure<PayPalSettings>(configuration.GetSection("PayPalSettings"));
         services.AddJwt(configuration);
         services.AddSwagger();
         services.AddCors();
