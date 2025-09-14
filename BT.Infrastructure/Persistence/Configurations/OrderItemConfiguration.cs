@@ -21,5 +21,9 @@ public class OrderItemConfiguration : IEntityTypeConfiguration<OrderItem>
             .WithMany(pv => pv.OrderItems)
             .HasForeignKey(oi => oi.ProductVariantId)
             .OnDelete(DeleteBehavior.Restrict);
+        builder.HasOne(oi => oi.ProductColor)
+            .WithMany(pc => pc.OrderItems)
+            .HasForeignKey(oi => oi.ProductColorId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

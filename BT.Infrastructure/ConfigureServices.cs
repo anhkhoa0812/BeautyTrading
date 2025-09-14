@@ -24,6 +24,7 @@ public static class ConfigureServices
         services.AddScoped<BeautyTradingContextSeed>();
         services.Configure<JwtSettings>(configuration.GetSection("JwtSettings"));
         services.Configure<PayPalSettings>(configuration.GetSection("PayPalSettings"));
+        services.Configure<S3CompatibleStorageSettings>(configuration.GetSection("S3CompatibleStorageSettings"));
         services.AddJwt(configuration);
         services.AddSwagger();
         services.AddCors();

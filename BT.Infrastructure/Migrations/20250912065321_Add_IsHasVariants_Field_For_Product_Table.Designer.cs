@@ -4,6 +4,7 @@ using BT.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BT.Infrastructure.Migrations
 {
     [DbContext(typeof(BeautyTradingContext))]
-    partial class BeautyTradingContextModelSnapshot : ModelSnapshot
+    [Migration("20250912065321_Add_IsHasVariants_Field_For_Product_Table")]
+    partial class Add_IsHasVariants_Field_For_Product_Table
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -137,9 +140,6 @@ namespace BT.Infrastructure.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<Guid?>("ProductColorId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<Guid>("ProductVariantId")
                         .HasColumnType("uniqueidentifier");
 
@@ -149,8 +149,6 @@ namespace BT.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("OrderId");
-
-                    b.HasIndex("ProductColorId");
 
                     b.HasIndex("ProductVariantId");
 
@@ -183,10 +181,6 @@ namespace BT.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("BannerUrl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<Guid>("CategoryId")
                         .HasColumnType("uniqueidentifier");
 
@@ -212,45 +206,11 @@ namespace BT.Infrastructure.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
-                    b.Property<string>("VideoUrl")
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
 
                     b.ToTable("Product");
-                });
-
-            modelBuilder.Entity("BT.Domain.Entities.ProductColor", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("ColorName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("ImageUrl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("LastModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("ProductId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("ProductColor");
                 });
 
             modelBuilder.Entity("BT.Domain.Entities.ProductImage", b =>
@@ -370,11 +330,6 @@ namespace BT.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("BT.Domain.Entities.ProductColor", "ProductColor")
-                        .WithMany("OrderItems")
-                        .HasForeignKey("ProductColorId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.HasOne("BT.Domain.Entities.ProductVariant", "ProductVariant")
                         .WithMany("OrderItems")
                         .HasForeignKey("ProductVariantId")
@@ -382,8 +337,6 @@ namespace BT.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Order");
-
-                    b.Navigation("ProductColor");
 
                     b.Navigation("ProductVariant");
                 });
@@ -397,17 +350,6 @@ namespace BT.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Category");
-                });
-
-            modelBuilder.Entity("BT.Domain.Entities.ProductColor", b =>
-                {
-                    b.HasOne("BT.Domain.Entities.Product", "Product")
-                        .WithMany("ProductColors")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("BT.Domain.Entities.ProductImage", b =>
@@ -475,16 +417,9 @@ namespace BT.Infrastructure.Migrations
 
             modelBuilder.Entity("BT.Domain.Entities.Product", b =>
                 {
-                    b.Navigation("ProductColors");
-
                     b.Navigation("ProductImages");
 
                     b.Navigation("ProductVariants");
-                });
-
-            modelBuilder.Entity("BT.Domain.Entities.ProductColor", b =>
-                {
-                    b.Navigation("OrderItems");
                 });
 
             modelBuilder.Entity("BT.Domain.Entities.ProductVariant", b =>

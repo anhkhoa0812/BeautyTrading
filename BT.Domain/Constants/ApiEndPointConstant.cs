@@ -20,4 +20,16 @@ public class ApiEndPointConstant
         public const string GetAllOrder = OrderEndpoint;
         public const string GetOrder = OrderEndpoint + "/{id}";
     }
+
+    public static class Product
+    {
+        public const string ProductEndpoint = ApiEndpoint + "/products";
+        public const string ProductWithId = ProductEndpoint + "/{id}";
+        public const string ProductWithProductColor = ProductWithId + "/product-colors";
+    }
+
+    public static class Category
+    {
+        public const string CategoryEndpoint = ApiEndpoint + "/categories";
+    }
 }

@@ -21,6 +21,7 @@
       </PackageReference>
       <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.8" />
       <PackageReference Include="PayPalCheckoutSdk" Version="1.0.4" />
+      <PackageReference Include="Minio" Version="6.0.5" />
       <PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
       <PackageReference Include="Serilog.Enrichers.Environment" Version="3.0.1" />
       <PackageReference Include="Serilog.Formatting.Compact" Version="3.0.0" />

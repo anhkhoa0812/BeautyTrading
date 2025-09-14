@@ -4,6 +4,7 @@ using BT.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BT.Infrastructure.Migrations
 {
     [DbContext(typeof(BeautyTradingContext))]
-    partial class BeautyTradingContextModelSnapshot : ModelSnapshot
+    [Migration("20250914161507_Add_Banner_And_VideoUrl_For_Product")]
+    partial class Add_Banner_And_VideoUrl_For_Product
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
