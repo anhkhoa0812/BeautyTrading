@@ -4,7 +4,8 @@ using BT.Application.Common.Utils;
 using BT.Application.Features.Accounts.Command.CreateAccount;
 using BT.Application.Features.Authentication.Command.Login;
 using BT.Application.Features.Categories.Command.CreateCategory;
-using BT.Application.Features.Products.CreateProduct;
+using BT.Application.Features.ProductColors.Command.CreateProductColor;
+using BT.Application.Features.Products.Command.CreateProduct;
 using BT.Application.Services.Implement;
 using BT.Application.Services.Interface;
 using BT.Domain.Models.Common;
@@ -31,6 +32,7 @@ public static class ConfigureServices
         services.AddScoped<IValidator<CreateAccountCommand>, CreateAccountCommandValidator>();
         services.AddScoped<IValidator<CreateProductCommand>, CreateProductCommandValidator>();
         services.AddScoped<IValidator<CreateCategoryCommand>, CreateCategoryCommandValidator>();
+        services.AddScoped<IValidator<CreateProductColorCommand>, CreateProductColorCommandValidator>();
         services.AddScoped<IClaimService, ClaimService>();
         services.AddScoped<IAuthenticationService, AuthenticationService>();
         services.AddScoped<IUploadService, UploadService>();
