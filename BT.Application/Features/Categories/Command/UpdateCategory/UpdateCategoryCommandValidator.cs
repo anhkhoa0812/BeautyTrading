@@ -1,15 +1,13 @@
-using BT.Domain.Models.Common;
 using FluentValidation;
 
-namespace BT.Application.Features.Categories.Command.CreateCategory;
+namespace BT.Application.Features.Categories.Command.UpdateCategory;
 
-public class CreateCategoryCommandValidator : AbstractValidator<CreateCategoryCommand>
+public class UpdateCategoryCommandValidator : AbstractValidator<UpdateCategoryCommand>
 {
-    public CreateCategoryCommandValidator()
+    public UpdateCategoryCommandValidator()
     {
         RuleFor(x => x.Name)
             .NotEmpty().WithMessage("Category name cannot be empty")
-            .NotNull().WithMessage("Category name cannot be null")
             .MaximumLength(255).WithMessage("Category name must not exceed 255 characters");
         RuleFor(x => x.Description)
             .NotEmpty().WithMessage("Category description cannot be empty")

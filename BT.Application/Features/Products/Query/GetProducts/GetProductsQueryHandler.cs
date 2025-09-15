@@ -39,7 +39,8 @@ public class GetProductsQueryHandler : IRequestHandler<GetProductsQuery, ApiResp
             page: request.Page,
             size: request.Size,
             sortBy: request.SortBy ?? "CreatedDate",
-            isAsc: request.IsAsc
+            isAsc: request.IsAsc,
+            filter: request.Filter
         );
         
         return new ApiResponse
