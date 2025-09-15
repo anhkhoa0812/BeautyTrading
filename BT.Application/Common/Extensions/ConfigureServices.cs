@@ -3,6 +3,7 @@ using BT.Application.Common.Behaviours;
 using BT.Application.Common.Utils;
 using BT.Application.Features.Accounts.Command.CreateAccount;
 using BT.Application.Features.Authentication.Command.Login;
+using BT.Application.Features.Orders.Command.CreateOrder;
 using BT.Application.Features.Categories.Command.CreateCategory;
 using BT.Application.Features.Categories.Command.UpdateCategory;
 using BT.Application.Features.ProductColors.Command.CreateProductColor;
@@ -32,6 +33,7 @@ public static class ConfigureServices
         services.AddScoped(typeof(ValidationUtil<>));
         services.AddScoped<IValidator<LoginCommand>, LoginCommandValidator>();
         services.AddScoped<IValidator<CreateAccountCommand>, CreateAccountCommandValidator>();
+        services.AddScoped<IValidator<CreateOrderCommand>, CreateOrderCommandValidator>();
         services.AddScoped<IValidator<CreateProductCommand>, CreateProductCommandValidator>();
         services.AddScoped<IValidator<CreateCategoryCommand>, CreateCategoryCommandValidator>();
         services.AddScoped<IValidator<CreateProductColorCommand>, CreateProductColorCommandValidator>();
@@ -39,6 +41,7 @@ public static class ConfigureServices
         services.AddScoped<IValidator<CreateProductVariantCommand>, CreateProductVariantCommandValidator>();
         services.AddScoped<IClaimService, ClaimService>();
         services.AddScoped<IAuthenticationService, AuthenticationService>();
+        services.AddScoped<IPayPalService, PayPalService>();
         services.AddScoped<IUploadService, UploadService>();
         services.Configure<ApiBehaviorOptions>(options =>
         {
