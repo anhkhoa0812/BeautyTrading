@@ -10,6 +10,7 @@ using BT.Application.Features.ProductColors.Command.CreateProductColor;
 using BT.Application.Features.Products.Command.CreateProduct;
 using BT.Application.Features.Transactions.Command;
 using BT.Application.Features.ProductVariants.Command.CreateProductVariant;
+using BT.Application.Features.ProductVariants.Command.UpdateProductVariant;
 using BT.Application.Services.Implement;
 using BT.Application.Services.Interface;
 using BT.Domain.Models.Common;
@@ -41,6 +42,7 @@ public static class ConfigureServices
         services.AddScoped<IValidator<CreateTransactionCommand>, CreateTransactionCommandValidator>();
         services.AddScoped<IValidator<UpdateCategoryCommand>, UpdateCategoryCommandValidator>();
         services.AddScoped<IValidator<CreateProductVariantCommand>, CreateProductVariantCommandValidator>();
+        services.AddScoped<IValidator<UpdateProductVariantCommand>, UpdateProductVariantCommandValidator>();
         services.AddScoped<IClaimService, ClaimService>();
         services.AddScoped<IAuthenticationService, AuthenticationService>();
         services.AddScoped<IPayPalService, PayPalService>();

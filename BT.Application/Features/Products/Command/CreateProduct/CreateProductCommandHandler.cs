@@ -109,7 +109,7 @@ public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand,
             throw new Exception("Create product failed");
         }
         
-        _logger.Information($"Product {product.Id} created successfully");
+        _logger.Information("Product {ProductId} created successfully", product.Id);
         return new ApiResponse()
         {
             Status = StatusCodes.Status201Created,
