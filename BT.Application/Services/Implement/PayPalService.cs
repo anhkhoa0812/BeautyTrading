@@ -3,6 +3,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using BT.Application.Services.Interface;
+using BT.Domain.Models.Payment;
 using BT.Domain.Models.Settings;
 using Microsoft.Extensions.Options;
 using PayPalCheckoutSdk.Core;
@@ -24,7 +25,7 @@ public class PayPalService : IPayPalService
         _client = new PayPalHttpClient(_environment);
     }
 
-    public async Task<string> CreateUrlPayment(decimal amount, string description)
+    public async Task<PayPalCreateOrder> CreateUrlPayment(Domain.Entities.Order order, string currency, string description)
     {
         var orderRequest = new OrderRequest()
         {
@@ -35,10 +36,30 @@ public class PayPalService : IPayPalService
                 {
                     AmountWithBreakdown = new AmountWithBreakdown
                     {
-                        CurrencyCode = "USD",
-                        Value = amount.ToString("F2", CultureInfo.InvariantCulture)
+                        CurrencyCode = currency,
+                        Value = order.TotalPrice.ToString("F2", CultureInfo.InvariantCulture),
+                        AmountBreakdown = new AmountBreakdown
+                        {
+                            ItemTotal = new Money
+                            {
+                                CurrencyCode = currency,
+                                Value = order.OrderItems
+                                    .Sum(oi => oi.Price * oi.Quantity)
+                                    .ToString("F2", CultureInfo.InvariantCulture)
+                            }
+                        }
                     },
-                    Description = description
+                    Description = description,
+                    Items = order.OrderItems.Select(oi => new Item
+                    {
+                        Name = $"{oi.ProductVariant?.Name ?? "No Variant"} - {oi.ProductColor?.ColorName ?? "No Color"}",
+                        Quantity = oi.Quantity.ToString(),
+                        UnitAmount = new Money
+                        {
+                            CurrencyCode = currency,
+                            Value = oi.Price.ToString("F2", CultureInfo.InvariantCulture)
+                        }
+                    }).ToList()
                 }
             },
             ApplicationContext = new ApplicationContext
@@ -54,8 +75,14 @@ public class PayPalService : IPayPalService
 
         var response = await _client.Execute(request);
         var result = response.Result<Order>();
+        
+        var lastOrderId = result.Id;
 
-        return result.Links.FirstOrDefault(x => x.Rel == "approve")?.Href;
+        return new PayPalCreateOrder()
+        {
+            Code = lastOrderId,
+            Url = result.Links.FirstOrDefault(x => x.Rel == "approve")?.Href
+        };
     }
 
 }
