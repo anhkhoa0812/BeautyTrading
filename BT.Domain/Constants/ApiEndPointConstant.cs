@@ -34,4 +34,10 @@ public class ApiEndPointConstant
         public const string CategoryEndpoint = ApiEndpoint + "/categories";
         public const string CategoryWithId = CategoryEndpoint + "/{id}";
     }
+
+    public static class ProductVariant
+    {
+        public const string ProductVariantEndpoint = ApiEndpoint + "/product-variants";
+        public const string ProductVariantWithId = ProductVariantEndpoint + "/{id}";
+    }
 }

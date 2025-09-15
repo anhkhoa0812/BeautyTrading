@@ -40,7 +40,8 @@ public class GetCategoryByIdQueryHandler : IRequestHandler<GetCategoryByIdQuery,
             Name = category.Name,
             Description = category.Description,
             CreatedDate = category.CreatedDate,
-            LastModifiedDate = category.LastModifiedDate
+            LastModifiedDate = category.LastModifiedDate,
+            IsActive = category.IsActive
         };
         
         return new ApiResponse

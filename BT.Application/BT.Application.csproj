@@ -27,7 +27,6 @@
       <Folder Include="Features\Accounts\Query\" />
       <Folder Include="Features\Authentication\Query\" />
       <Folder Include="Features\ProductColors\Query\" />
-      <Folder Include="Features\Products\Command\" />
       <Folder Include="Features\Products\Query\" />
       <Folder Include="Features\ProductVariants\Query\" />
     </ItemGroup>
