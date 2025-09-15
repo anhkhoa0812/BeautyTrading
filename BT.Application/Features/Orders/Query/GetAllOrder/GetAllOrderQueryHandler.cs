@@ -12,13 +12,13 @@ using Mediator;
 
 namespace BT.Application.Features.Orders.Query.GetAllOrder;
 
-public class GetAllOrderQueryHandle : IRequestHandler<GetAllOrderQuery, ApiResponse>
+public class GetAllOrderQueryHandler : IRequestHandler<GetAllOrderQuery, ApiResponse>
 {
     private readonly IUnitOfWork<BeautyTradingContext> _unitOfWork;
     private readonly ILogger _logger;
     private readonly IClaimService _claimService;
 
-    public GetAllOrderQueryHandle(IUnitOfWork<BeautyTradingContext> unitOfWork, 
+    public GetAllOrderQueryHandler(IUnitOfWork<BeautyTradingContext> unitOfWork, 
         ILogger logger, IClaimService claimService)
     {
         _unitOfWork = unitOfWork;
