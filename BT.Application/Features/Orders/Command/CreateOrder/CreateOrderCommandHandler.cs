@@ -9,6 +9,7 @@ using BT.Infrastructure.Persistence;
 using BT.Infrastructure.Repositories.Interface;
 using BT.Infrastructure.Utils;
 using Mediator;
+using Microsoft.EntityFrameworkCore;
 
 namespace BT.Application.Features.Orders.Command.CreateOrder;
 
@@ -46,13 +47,24 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Api
         foreach (var item in request.Items)
         {
             var productVariant = await _unitOfWork.GetRepository<ProductVariant>().SingleOrDefaultAsync(
-                predicate: p => p.Id.Equals(item.ProductVariantId)) ?? throw new NotFoundException("Product not found");
+                predicate: p => p.Id.Equals(item.ProductVariantId),
+                include: p => p.Include(p => p.Product)) ?? throw new NotFoundException("Product not found");
+
+            var productColor = await _unitOfWork.GetRepository<ProductColor>().SingleOrDefaultAsync(
+                predicate: p => p.Id.Equals(item.ProductColorId),
+                include: p => p.Include(p => p.Product)) ?? throw new NotFoundException("Product color not found");
+
+            if (productVariant.Product.Id != productColor.Product.Id)
+            {
+                throw new BadHttpRequestException("Product color is not the same as product variant");
+            }
 
             var orderItem = new OrderItem
             {
                 Id = Guid.NewGuid(),
                 OrderId = order.Id,
                 ProductVariantId = item.ProductVariantId,
+                ProductColorId = item.ProductColorId,
                 Price = productVariant.Price,
                 Quantity = item.Quantity
             };

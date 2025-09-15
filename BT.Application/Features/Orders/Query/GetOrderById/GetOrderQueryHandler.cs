@@ -12,13 +12,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BT.Application.Features.Orders.Query.GetOrderById;
 
-public class GetOrderQueryHandle : IRequestHandler<GetOrderQuery, ApiResponse>
+public class GetOrderQueryHandler : IRequestHandler<GetOrderQuery, ApiResponse>
 {
     private readonly IUnitOfWork<BeautyTradingContext> _unitOfWork;
     private readonly ILogger _logger;
     private readonly IClaimService _claimService;
 
-    public GetOrderQueryHandle(IUnitOfWork<BeautyTradingContext> unitOfWork, 
+    public GetOrderQueryHandler(IUnitOfWork<BeautyTradingContext> unitOfWork, 
         ILogger logger, IClaimService claimService)
     {
         _unitOfWork = unitOfWork;
@@ -48,7 +48,7 @@ public class GetOrderQueryHandle : IRequestHandler<GetOrderQuery, ApiResponse>
                         Name = oi.ProductVariant.Name,
                         Price = oi.Price,
                         Quantity = oi.Quantity,
-                        ProductVariantId = oi.ProductVariantId
+                        ProductColor = oi.ProductColor.ColorName,
                     }).ToList()
                 },
                 predicate: o => o.Id.Equals(request.Id),
@@ -71,7 +71,7 @@ public class GetOrderQueryHandle : IRequestHandler<GetOrderQuery, ApiResponse>
                         Name = oi.ProductVariant.Name,
                         Price = oi.Price,
                         Quantity = oi.Quantity,
-                        ProductVariantId = oi.ProductVariantId
+                        ProductColor = oi.ProductColor.ColorName,
                     }).ToList()
                 },
                 predicate: o => o.Id.Equals(request.Id) && o.AccountId.Equals(accountId),

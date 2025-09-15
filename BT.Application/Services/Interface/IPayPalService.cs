@@ -1,6 +1,9 @@
-﻿namespace BT.Application.Services.Interface;
+﻿using BT.Domain.Entities;
+using BT.Domain.Models.Payment;
+
+namespace BT.Application.Services.Interface;
 
 public interface IPayPalService
 {
-    public Task<string> CreateUrlPayment(decimal amount, string description);
+    public Task<PayPalCreateOrder> CreateUrlPayment(Order order, string currency, string description);
 }

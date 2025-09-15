@@ -8,6 +8,7 @@ using BT.Application.Features.Categories.Command.CreateCategory;
 using BT.Application.Features.Categories.Command.UpdateCategory;
 using BT.Application.Features.ProductColors.Command.CreateProductColor;
 using BT.Application.Features.Products.Command.CreateProduct;
+using BT.Application.Features.Transactions.Command;
 using BT.Application.Features.ProductVariants.Command.CreateProductVariant;
 using BT.Application.Features.ProductVariants.Command.UpdateProductVariant;
 using BT.Application.Services.Implement;
@@ -38,6 +39,7 @@ public static class ConfigureServices
         services.AddScoped<IValidator<CreateProductCommand>, CreateProductCommandValidator>();
         services.AddScoped<IValidator<CreateCategoryCommand>, CreateCategoryCommandValidator>();
         services.AddScoped<IValidator<CreateProductColorCommand>, CreateProductColorCommandValidator>();
+        services.AddScoped<IValidator<CreateTransactionCommand>, CreateTransactionCommandValidator>();
         services.AddScoped<IValidator<UpdateCategoryCommand>, UpdateCategoryCommandValidator>();
         services.AddScoped<IValidator<CreateProductVariantCommand>, CreateProductVariantCommandValidator>();
         services.AddScoped<IValidator<UpdateProductVariantCommand>, UpdateProductVariantCommandValidator>();

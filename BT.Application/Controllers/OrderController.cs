@@ -2,6 +2,7 @@
 using BT.Application.Features.Orders.Command.CreateOrder;
 using BT.Application.Features.Orders.Query.GetAllOrder;
 using BT.Application.Features.Orders.Query.GetOrderById;
+using BT.Application.Features.Transactions.Command;
 using BT.Application.Services.Interface;
 using BT.Domain.Constants;
 using BT.Domain.Models.Common;
@@ -16,15 +17,14 @@ public class OrderController : BaseController<OrderController>
 {
     private readonly IMediator _mediator;
     private readonly ValidationUtil<CreateOrderCommand> _createOrderCommand;
-    private readonly IPayPalService _payPalService;
+    private readonly ValidationUtil<CreateTransactionCommand> _createTransactionCommand;
 
     public OrderController(ILogger logger, IMediator mediator, 
-        ValidationUtil<CreateOrderCommand> createOrderCommand,
-        IPayPalService palService) : base(logger)
+        ValidationUtil<CreateOrderCommand> createOrderCommand, ValidationUtil<CreateTransactionCommand> createTransactionCommand) : base(logger)
     {
         _mediator = mediator;
         _createOrderCommand = createOrderCommand;
-        _payPalService = palService;
+        _createTransactionCommand = createTransactionCommand;
     }
     
     [HttpPost(ApiEndPointConstant.Order.CreateOrder)]
@@ -71,15 +71,27 @@ public class OrderController : BaseController<OrderController>
 
         var apiResponse = await _mediator.Send(query);
         return Ok(apiResponse);
-    } 
+    }
     
-    [HttpGet("Test")]
-    [ProducesResponseType<ApiResponse<IPaginate<GetOrderDetailResponse>>>(StatusCodes.Status200OK)]
+    [HttpPost(ApiEndPointConstant.Order.PaymentOrder)]
+    [ProducesResponseType<ApiResponse<string>>(StatusCodes.Status201Created)]
+    [ProducesResponseType<ApiResponse>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType<ApiResponse>(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Test()
+    [ProducesResponseType<ApiResponse>(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> PaymentOrder([FromRoute] Guid id, [FromBody] CreateTransactionDTO request)
     {
-        var url = await _payPalService.CreateUrlPayment(20, "Test");
-        
-        return Ok(url);
+        var command = new CreateTransactionCommand()
+        {
+            OrderId = id,
+            Currency = request.Currency,
+            PaymentMethodId = request.PaymentMethodId,
+        };
+        var (isValid, response) = await _createTransactionCommand.ValidateAsync(command);
+        if (!isValid)
+        {
+            return BadRequest(response);
+        }
+        var apiResponse = await _mediator.Send(command);
+        return Ok(apiResponse);
     } 
 }

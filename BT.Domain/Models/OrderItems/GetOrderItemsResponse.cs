@@ -10,5 +10,5 @@ public class GetOrderItemsResponse
     
     public int Quantity { get; set; }
     
-    public Guid ProductVariantId { get; set; }
+    public string ProductColor { get; set; }
 }
