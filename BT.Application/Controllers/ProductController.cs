@@ -4,13 +4,16 @@ using BT.Application.Features.ProductColors.Command.CreateProductColor;
 using BT.Application.Features.Products.Query.GetProductById;
 using BT.Application.Features.Products.Query.GetProducts;
 using BT.Application.Features.Products.Command.CreateProduct;
+using BT.Application.Features.ProductVariants.Command.CreateProductVariant;
 using BT.Domain.Constants;
 using BT.Domain.Enums;
 using BT.Domain.Models.Common;
 using BT.Domain.Models.Products;
+using BT.Infrastructure.Filter.Models;
 using BT.Infrastructure.Paginate.Interface;
 using Mediator;
 using Microsoft.AspNetCore.Mvc;
+using CreateProductVariantRequest = BT.Application.Features.Products.Command.CreateProduct.CreateProductVariantRequest;
 
 namespace BT.Application.Controllers;
 
@@ -21,13 +24,16 @@ public class ProductController : BaseController<ProductController>
     private readonly IMediator _mediator;
     private readonly ValidationUtil<CreateProductCommand> _createProductValidationUtil;
     private readonly ValidationUtil<CreateProductColorCommand> _createProductColorValidationUtil;
+    private readonly ValidationUtil<CreateProductVariantCommand> _createProductVariantValidationUtil;
     public ProductController(ILogger logger, IMediator mediator,
         ValidationUtil<CreateProductCommand> createProductValidationUtil,
-        ValidationUtil<CreateProductColorCommand> createProductColorValidationUtil) : base(logger)
+        ValidationUtil<CreateProductColorCommand> createProductColorValidationUtil,
+        ValidationUtil<CreateProductVariantCommand> createProductVariantValidationUtil) : base(logger)
     {
         _mediator = mediator;
         _createProductValidationUtil = createProductValidationUtil;
         _createProductColorValidationUtil = createProductColorValidationUtil;
+        _createProductVariantValidationUtil = createProductVariantValidationUtil;
     }
     
     [CustomAuthorize(ERole.Admin)]
@@ -80,14 +86,15 @@ public class ProductController : BaseController<ProductController>
     [ProducesResponseType<ApiResponse>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType<ApiResponse>(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetProducts([FromQuery] int page = 1, [FromQuery] int size = 30,
-        [FromQuery] string? sortBy = null, [FromQuery] bool isAsc = false)
+        [FromQuery] string? sortBy = null, [FromQuery] bool isAsc = false, [FromQuery] ProductFilter? filter = null)
     {
         var query = new GetProductsQuery()
         {
             Page = page,
             Size = size,
             SortBy = sortBy,
-            IsAsc = isAsc
+            IsAsc = isAsc,
+            Filter = filter
         };
         var apiResponse = await _mediator.Send(query);
         return Ok(apiResponse);
@@ -105,5 +112,35 @@ public class ProductController : BaseController<ProductController>
         };
         var apiResponse = await _mediator.Send(query);
         return Ok(apiResponse);
+    }
+
+    [CustomAuthorize(ERole.Admin)]
+    [HttpPost(ApiEndPointConstant.Product.ProductWithProductVariant)]
+    [ProducesResponseType<ApiResponse>(StatusCodes.Status201Created)]
+    [ProducesResponseType<ApiResponse>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<ApiResponse>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<ApiResponse>(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType<ApiResponse>(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType<ApiResponse>(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> CreateProductVariant([FromRoute] Guid id,
+        [FromBody] CreateProductVariantRequest request)
+    {
+        var command = new CreateProductVariantCommand()
+        {
+            ProductId = id,
+            Name = request.Name,
+            Price = request.Price,
+            Currency = request.Currency,
+            Stock = request.Stock
+        };
+
+        var (isValid, response) = await _createProductVariantValidationUtil.ValidateAsync(command);
+        if (!isValid)
+        {
+            return BadRequest(response);
+        }
+
+        var apiResponse = await _mediator.Send(command);
+        return CreatedAtAction(nameof(CreateProductVariant), apiResponse);
     }
 }
