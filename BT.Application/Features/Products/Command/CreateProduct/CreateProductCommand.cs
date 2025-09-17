@@ -11,7 +11,22 @@ public class CreateProductCommand : IRequest<ApiResponse>
     public Guid CategoryId { get; set; }
     public bool IsHasVariants { get; set; }
     public IFormFile BannerImage { get; set; }
-    public string? VideoUrl { get; set; }
+    public IFormFile? Video { get; set; }
+    public string? Voltage { get; set; }
+    public string? MachinePower { get; set; }
+    public string? ControlMode { get; set; }
+    public string? OutputFrequency { get; set; }
+    public string? OutputPower { get; set; }
+    public string? LedWavelength { get; set; }
+    public string? LedOutputPower { get; set; }
+    public string? IrFrequencyConversionInfraredLight { get; set; }	
+    public string? IrInverterInfraredOutputPower { get; set; }
+    public string? AirPumpNegativePressure { get; set; }
+    public string? RotaryRfHandleTorqueMachineSetWeight { get; set; }
+    public decimal MachineNetWeight { get; set; }
+    public string? MachineSize { get; set; }
+    public string? PackageSize { get; set; }
+    public decimal PackageWeight { get; set; }
     public decimal? Price { get; set; }
     public string? Currency { get; set; }
     public int? Stock { get; set; }

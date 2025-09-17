@@ -12,6 +12,15 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
         builder.HasKey(o => o.Id);
         builder.Property(o => o.TotalPrice)
             .IsRequired();
+        builder.Property(o => o.Address)
+            .IsRequired()
+            .HasMaxLength(500);
+        builder.Property(o => o.Country)
+            .IsRequired()
+            .HasMaxLength(100);
+        builder.Property(o => o.TaxCode)
+            .IsRequired()
+            .HasMaxLength(50);
         builder.Property(o => o.Status)
             .IsRequired()
             .HasConversion(

@@ -4,7 +4,7 @@ namespace BT.Application.Features.Products.Command.CreateProduct;
 
 public class CreateProductCommandValidator : AbstractValidator<CreateProductCommand>
 {
-    private static readonly string[] _allowedExtensions = new[]
+    private static readonly string[] _allowedImageExtensions = new[]
     {
         ".jpeg", ".png", ".jpg", ".gif", ".bmp", ".webp"
     };
@@ -24,6 +24,36 @@ public class CreateProductCommandValidator : AbstractValidator<CreateProductComm
             .NotEqual(Guid.Empty).WithMessage("CategoryId must be a valid GUID");
         RuleFor(x => x.IsHasVariants)
             .NotNull().WithMessage("IsHasVariants must not be null");
+        RuleFor(x => x.Voltage)
+            .MaximumLength(255).WithMessage("Voltage must not exceed 255 characters");
+        RuleFor(x => x.MachinePower)
+            .MaximumLength(255).WithMessage("Machine Power must not exceed 255 characters");
+        RuleFor(x => x.ControlMode)
+            .MaximumLength(255).WithMessage("Control Mode must not exceed 255 characters");
+        RuleFor(x => x.OutputFrequency)
+            .MaximumLength(255).WithMessage("Output Frequency must not exceed 255 characters");
+        RuleFor(x => x.OutputPower)
+            .MaximumLength(255).WithMessage("Output Power must not exceed 255 characters");
+        RuleFor(x => x.LedWavelength)
+            .MaximumLength(255).WithMessage("Led Wavelength must not exceed 255 characters");
+        RuleFor(x => x.LedOutputPower)
+            .MaximumLength(255).WithMessage("Led Output Power must not exceed 255 characters");
+        RuleFor(x => x.IrFrequencyConversionInfraredLight)
+            .MaximumLength(255).WithMessage("IR Frequency Conversion Infrared Light must not exceed 255 characters");
+        RuleFor(x => x.IrInverterInfraredOutputPower)
+            .MaximumLength(255).WithMessage("IR Inverter Infrared Output Power must not exceed 255 characters");
+        RuleFor(x => x.AirPumpNegativePressure)
+            .MaximumLength(255).WithMessage("Air Pump Negative Pressure must not exceed 255 characters");
+        RuleFor(x => x.RotaryRfHandleTorqueMachineSetWeight)
+            .MaximumLength(255).WithMessage("Rotary RF Handle Torque Machine Set Weight must not exceed 255 characters");
+        RuleFor(x => x.MachineNetWeight)
+            .GreaterThan(0).WithMessage("Machine Net Weight must be greater than 0");
+        RuleFor(x => x.MachineSize)
+            .MaximumLength(255).WithMessage("Machine Size must not exceed 255 characters");
+        RuleFor(x => x.PackageSize)
+            .MaximumLength(255).WithMessage("Package Size must not exceed 255 characters");
+        RuleFor(x => x.PackageWeight)
+            .GreaterThan(0).WithMessage("Package Weight must be greater than 0");
         When(x => !x.IsHasVariants, () =>
         {
             RuleFor(x => x.Price)
@@ -49,9 +79,18 @@ public class CreateProductCommandValidator : AbstractValidator<CreateProductComm
             {
                 var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
 
-                return _allowedExtensions.Contains(extension);
-            }).WithMessage("Main image has an invalid file type. Allowed types are: " + string.Join(", ", _allowedExtensions));
+                return _allowedImageExtensions.Contains(extension);
+            }).WithMessage("Main image has an invalid file type. Allowed types are: " + string.Join(", ", _allowedImageExtensions));
+        RuleFor(x => x.Video)
+            .Cascade(CascadeMode.Stop)
+            .Must(file =>
+            {
+                var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
+
+                return extension.Equals(".mp4");
+            }).WithMessage("Main image has an invalid file type. Allowed types are: .mp4");
         RuleForEach(x => x.Images).SetValidator(new CreateProductImageRequestValidator());
+        
     }
 }
 public class CreateProductVariantRequestValidator : AbstractValidator<CreateProductVariantRequest>
