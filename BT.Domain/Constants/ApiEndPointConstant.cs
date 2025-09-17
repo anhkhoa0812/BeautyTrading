@@ -41,4 +41,10 @@ public class ApiEndPointConstant
         public const string ProductVariantEndpoint = ApiEndpoint + "/product-variants";
         public const string ProductVariantWithId = ProductVariantEndpoint + "/{id}";
     }
+
+    public static class News
+    {
+        public const string NewsEndpoint = ApiEndpoint + "/news";
+        public const string NewsWithId = NewsEndpoint + "/{id}";
+    }
 }

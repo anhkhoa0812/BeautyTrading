@@ -20,7 +20,7 @@ public class BeautyTradingContext : DbContext
     public virtual DbSet<ProductImage> ProductImage { get; set; } = null!;
     public virtual DbSet<ProductVariant> ProductVariant { get; set; } = null!;
     public virtual DbSet<Transaction> Transaction { get; set; } = null!;
-    
+    public virtual DbSet<News> News { get; set; } = null!;
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(BeautyTradingContext).Assembly);
