@@ -1,4 +1,5 @@
 ﻿using BT.Application.Common.Exceptions;
+using BT.Application.Features.Transactions.Command.CreateTransaction;
 using BT.Application.Services.Interface;
 using BT.Domain.Entities;
 using BT.Domain.Enums;
@@ -8,7 +9,7 @@ using BT.Infrastructure.Repositories.Interface;
 using Mediator;
 using Microsoft.EntityFrameworkCore;
 
-namespace BT.Application.Features.Transactions.Command;
+namespace BT.Application.Features.Transactions.Command.CreateTransaction;
 
 public class CreateTransactionCommandHandler : IRequestHandler<CreateTransactionCommand, ApiResponse>
 {

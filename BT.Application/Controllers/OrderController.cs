@@ -1,8 +1,10 @@
 ﻿using BT.Application.Common.Utils;
 using BT.Application.Features.Orders.Command.CreateOrder;
+using BT.Application.Features.Orders.Command.UpdateOrder;
 using BT.Application.Features.Orders.Query.GetAllOrder;
 using BT.Application.Features.Orders.Query.GetOrderById;
 using BT.Application.Features.Transactions.Command;
+using BT.Application.Features.Transactions.Command.CreateTransaction;
 using BT.Application.Services.Interface;
 using BT.Domain.Constants;
 using BT.Domain.Models.Common;
@@ -18,13 +20,15 @@ public class OrderController : BaseController<OrderController>
     private readonly IMediator _mediator;
     private readonly ValidationUtil<CreateOrderCommand> _createOrderCommand;
     private readonly ValidationUtil<CreateTransactionCommand> _createTransactionCommand;
+    private readonly ValidationUtil<UpdateOrderCommand> _updateOrderCommand;
 
     public OrderController(ILogger logger, IMediator mediator, 
-        ValidationUtil<CreateOrderCommand> createOrderCommand, ValidationUtil<CreateTransactionCommand> createTransactionCommand) : base(logger)
+        ValidationUtil<CreateOrderCommand> createOrderCommand, ValidationUtil<CreateTransactionCommand> createTransactionCommand, ValidationUtil<UpdateOrderCommand> updateOrderCommand) : base(logger)
     {
         _mediator = mediator;
         _createOrderCommand = createOrderCommand;
         _createTransactionCommand = createTransactionCommand;
+        _updateOrderCommand = updateOrderCommand;
     }
     
     [HttpPost(ApiEndPointConstant.Order.CreateOrder)]
@@ -73,6 +77,26 @@ public class OrderController : BaseController<OrderController>
         return Ok(apiResponse);
     }
     
+    [HttpPut(ApiEndPointConstant.Order.UpdateOrder)]
+    [ProducesResponseType<ApiResponse<GetOrderResponse>>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ApiResponse>(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> UpdateOrder([FromRoute] Guid id, [FromBody] UpdateOrderRequest request)
+    {
+        var command = new UpdateOrderCommand()
+        {
+            Id = id,
+            Status = request.Status,
+        };
+
+        var (isValid, response) = await _updateOrderCommand.ValidateAsync(command);
+        if (!isValid)
+        {
+            return BadRequest(response);
+        }
+        var apiResponse = await _mediator.Send(command);
+        return Ok(apiResponse);
+    }
+    
     [HttpPost(ApiEndPointConstant.Order.PaymentOrder)]
     [ProducesResponseType<ApiResponse<string>>(StatusCodes.Status201Created)]
     [ProducesResponseType<ApiResponse>(StatusCodes.Status400BadRequest)]
@@ -93,5 +117,5 @@ public class OrderController : BaseController<OrderController>
         }
         var apiResponse = await _mediator.Send(command);
         return Ok(apiResponse);
-    } 
+    }
 }

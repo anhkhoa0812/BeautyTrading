@@ -19,6 +19,7 @@ public class ApiEndPointConstant
         public const string CreateOrder = OrderEndpoint;
         public const string GetAllOrder = OrderEndpoint;
         public const string GetOrder = OrderEndpoint + "/{id}";
+        public const string UpdateOrder = OrderEndpoint + "/{id}";
         public const string PaymentOrder = OrderEndpoint + "/{id}/payment";
     }
 
@@ -40,5 +41,12 @@ public class ApiEndPointConstant
     {
         public const string ProductVariantEndpoint = ApiEndpoint + "/product-variants";
         public const string ProductVariantWithId = ProductVariantEndpoint + "/{id}";
+    }
+    
+    public static class Transaction
+    {
+        public const string TransactionEndpoint = ApiEndpoint + "/transactions";
+        public const string GetAllTransaction = TransactionEndpoint;
+        public const string GetTransactionById = TransactionEndpoint + "/{id}";
     }
 }
