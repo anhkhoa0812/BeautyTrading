@@ -1,6 +1,7 @@
-﻿using FluentValidation;
+﻿using BT.Application.Features.Transactions.Command.CreateTransaction;
+using FluentValidation;
 
-namespace BT.Application.Features.Transactions.Command;
+namespace BT.Application.Features.Transactions.Command.CreateTransaction;
 
 public class CreateTransactionCommandValidator : AbstractValidator<CreateTransactionCommand>
 {

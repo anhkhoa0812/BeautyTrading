@@ -1,7 +1,7 @@
 ﻿using BT.Domain.Models.Common;
 using Mediator;
 
-namespace BT.Application.Features.Transactions.Command;
+namespace BT.Application.Features.Transactions.Command.CreateTransaction;
 
 public class CreateTransactionCommand : IRequest<ApiResponse>
 {
