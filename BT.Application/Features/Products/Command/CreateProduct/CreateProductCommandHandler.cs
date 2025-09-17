@@ -36,8 +36,27 @@ public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand,
             Description = request.Description,
             IsHasVariants = request.IsHasVariants,
             CategoryId = request.CategoryId,
-            VideoUrl = request.VideoUrl
+            Voltage = request.Voltage,
+            MachinePower = request.MachinePower,
+            ControlMode = request.ControlMode,
+            OutputFrequency = request.OutputFrequency,
+            OutputPower = request.OutputPower,
+            LedWavelength = request.LedWavelength,
+            LedOutputPower = request.LedOutputPower,
+            IrFrequencyConversionInfraredLight = request.IrFrequencyConversionInfraredLight,
+            IrInverterInfraredOutputPower = request.IrInverterInfraredOutputPower,
+            AirPumpNegativePressure = request.AirPumpNegativePressure,
+            RotaryRfHandleTorqueMachineSetWeight = request.RotaryRfHandleTorqueMachineSetWeight,
+            MachineNetWeight = request.MachineNetWeight,
+            MachineSize = request.MachineSize,
+            PackageSize = request.PackageSize,
+            PackageWeight = request.PackageWeight,
         };
+        if (request.Video != null)
+        {
+            var videoUrl = await _uploadService.UploadVideoAsync(request.Video);
+            product.VideoUrl = videoUrl;
+        }
         var mainImageUrl = await _uploadService.UploadImageAsync(request.MainImage);
         product.ImageUrl = mainImageUrl;
 

@@ -62,4 +62,48 @@ public class UploadService : IUploadService
             throw new Exception("Failed to upload image", e);
         }
     }
+
+    public async Task<string> UploadVideoAsync(IFormFile file)
+    {
+        if (file == null || file.Length == 0)
+        {
+            throw new BadHttpRequestException("Không tìm thấy file");
+        }
+
+        var extension = Path.GetExtension(file.FileName).ToLower();
+        if (!extension.Equals(".mp4"))
+        {
+            throw new InvalidOperationException("Chỉ các định dạng tệp mp4 được phép tải lên.");
+        }
+
+        try
+        {
+            var minio = new MinioClient()
+                .WithEndpoint(_compatibleStorageSettings.EndPoint)
+                .WithCredentials(_compatibleStorageSettings.AccessKey, _compatibleStorageSettings.SecretKey)
+                .Build();
+            var objectName = $"{Guid.NewGuid().ToString()}{extension}";
+            var headers = new Dictionary<string, string>
+            {
+                { "x-amz-acl", "public-read" }
+            };
+            var result = await minio.PutObjectAsync(new PutObjectArgs()
+                .WithBucket(_compatibleStorageSettings.BucketName)
+                .WithObject(objectName)
+                .WithStreamData(file.OpenReadStream())
+                .WithObjectSize(file.Length)
+                .WithContentType("video/mp4")
+                .WithHeaders(headers)
+            );
+            if (result == null)
+                throw new MinioException("Failed to upload video");
+            var url = $"https://{_compatibleStorageSettings.EndPoint}/{_compatibleStorageSettings.BucketName}/{objectName}";
+            return url;
+        }
+        catch (Exception e)
+        {
+            _logger.Error($"Failed to upload video: {e.Message}");
+            throw new Exception("Failed to upload video", e);
+        }
+    }
 }
