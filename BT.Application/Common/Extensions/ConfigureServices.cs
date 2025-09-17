@@ -6,6 +6,8 @@ using BT.Application.Features.Authentication.Command.Login;
 using BT.Application.Features.Orders.Command.CreateOrder;
 using BT.Application.Features.Categories.Command.CreateCategory;
 using BT.Application.Features.Categories.Command.UpdateCategory;
+using BT.Application.Features.News.Command.CreateNews;
+using BT.Application.Features.News.Command.UpdateNews;
 using BT.Application.Features.Orders.Command.UpdateOrder;
 using BT.Application.Features.ProductColors.Command.CreateProductColor;
 using BT.Application.Features.Products.Command.CreateProduct;
@@ -45,6 +47,8 @@ public static class ConfigureServices
         services.AddScoped<IValidator<UpdateCategoryCommand>, UpdateCategoryCommandValidator>();
         services.AddScoped<IValidator<CreateProductVariantCommand>, CreateProductVariantCommandValidator>();
         services.AddScoped<IValidator<UpdateProductVariantCommand>, UpdateProductVariantCommandValidator>();
+        services.AddScoped<IValidator<CreateNewsCommand>, CreateNewsCommandValidator>();
+        services.AddScoped<IValidator<UpdateNewsCommand>, UpdateNewsCommandValidator>();
         services.AddScoped<IValidator<UpdateOrderCommand>, UpdateOrderCommandValidator>();
         services.AddScoped<IClaimService, ClaimService>();
         services.AddScoped<IAuthenticationService, AuthenticationService>();
