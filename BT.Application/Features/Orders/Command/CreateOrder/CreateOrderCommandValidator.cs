@@ -17,5 +17,8 @@ public class CreateOrderCommandValidator : AbstractValidator<CreateOrderCommand>
             items.RuleFor(x => x.Quantity)
                 .GreaterThan(0).WithMessage("Quantity must be greater than 0");
         });
+        
+        RuleFor(x => x.TaxCode)
+            .NotEmpty().WithMessage("TaxCode cannot be empty");
     }
 }

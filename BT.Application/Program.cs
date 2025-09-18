@@ -13,6 +13,7 @@ try
 {
     builder.Services.AddInfrastructureServices(builder.Configuration);
     builder.Services.AddApplicationServices(builder.Configuration);
+    builder.Services.AddHttpClient();
     var app = builder.Build();
 
     app.UseDefaultFiles();

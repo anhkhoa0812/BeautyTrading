@@ -46,8 +46,16 @@ public class CreateTransactionCommandHandler : IRequestHandler<CreateTransaction
 
         var paymentMethod = await _unitOfWork.GetRepository<PaymentMethod>().SingleOrDefaultAsync(
             predicate: p => p.Id.Equals(request.PaymentMethodId)) ?? throw new NotFoundException("Payment method not found");
+
+        var vat = 0;
+        var shipping = 0;
+
+        if (order.Country.Equals("Netherlands"))
+        {
+            vat = 21;
+        }
         
-        var url = await _payPalService.CreateUrlPayment(order, request.Currency, $"Payment for order {order.Id}");
+        var url = await _payPalService.CreateUrlPayment(order, request.Currency, $"Payment for order {order.Id}", vat, shipping);
         
         var transaction = new Transaction()
         {

@@ -25,8 +25,16 @@ public class PayPalService : IPayPalService
         _client = new PayPalHttpClient(_environment);
     }
 
-    public async Task<PayPalCreateOrder> CreateUrlPayment(Domain.Entities.Order order, string currency, string description)
+    public async Task<PayPalCreateOrder> CreateUrlPayment(Domain.Entities.Order order, string currency, string description, decimal vat, decimal shipping)
     {
+        var itemTotal = order.OrderItems.Sum(oi => oi.Price * oi.Quantity);
+
+        var vatAmount = vat > 0 
+            ? Math.Round(((itemTotal + shipping) * vat) / 100m, 2) 
+            : 0m;
+        
+        var total = itemTotal + shipping + vatAmount;
+        
         var orderRequest = new OrderRequest()
         {
             CheckoutPaymentIntent = "CAPTURE",
@@ -37,16 +45,26 @@ public class PayPalService : IPayPalService
                     AmountWithBreakdown = new AmountWithBreakdown
                     {
                         CurrencyCode = currency,
-                        Value = order.TotalPrice.ToString("F2", CultureInfo.InvariantCulture),
+                        Value = total.ToString("F2", CultureInfo.InvariantCulture),
                         AmountBreakdown = new AmountBreakdown
                         {
                             ItemTotal = new Money
                             {
                                 CurrencyCode = currency,
-                                Value = order.OrderItems
-                                    .Sum(oi => oi.Price * oi.Quantity)
+                                Value = itemTotal.ToString("F2", CultureInfo.InvariantCulture)
+                            },
+                            TaxTotal = new Money()
+                            {
+                                CurrencyCode = currency,
+                                Value = vatAmount
                                     .ToString("F2", CultureInfo.InvariantCulture)
-                            }
+                            },
+                            Shipping = new Money()
+                            {
+                                CurrencyCode = currency,
+                                Value = shipping
+                                    .ToString("F2", CultureInfo.InvariantCulture)
+                            },
                         }
                     },
                     Description = description,

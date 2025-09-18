@@ -20,6 +20,7 @@ using BT.Application.Services.Interface;
 using BT.Domain.Models.Common;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
+using Nager.Country;
 
 namespace BT.Application.Common.Extensions;
 
@@ -54,6 +55,8 @@ public static class ConfigureServices
         services.AddScoped<IAuthenticationService, AuthenticationService>();
         services.AddScoped<IPayPalService, PayPalService>();
         services.AddScoped<IUploadService, UploadService>();
+        services.AddScoped<IVatCheckService, VatCheckService>();
+        services.AddSingleton<ICountryProvider, CountryProvider>();
         services.Configure<ApiBehaviorOptions>(options =>
         {
             options.InvalidModelStateResponseFactory = context =>

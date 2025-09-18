@@ -10,6 +10,7 @@ using BT.Infrastructure.Repositories.Interface;
 using BT.Infrastructure.Utils;
 using Mediator;
 using Microsoft.EntityFrameworkCore;
+using Nager.Country;
 
 namespace BT.Application.Features.Orders.Command.CreateOrder;
 
@@ -18,13 +19,17 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Api
     private readonly IUnitOfWork<BeautyTradingContext> _unitOfWork;
     private readonly ILogger _logger;
     private readonly IClaimService _claimService;
+    private readonly IVatCheckService _vatCheckService;
+    private readonly ICountryProvider _countryProvider;
 
     public CreateOrderCommandHandler(IUnitOfWork<BeautyTradingContext> unitOfWork, ILogger logger,
-        IClaimService claimService)
+        IClaimService claimService, IVatCheckService vatCheckService, ICountryProvider countryProvider)
     {
         _unitOfWork = unitOfWork;
         _logger = logger;
         _claimService = claimService;
+        _vatCheckService = vatCheckService;
+        _countryProvider = countryProvider;
     }
     
     public async ValueTask<ApiResponse> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
@@ -34,10 +39,20 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Api
         var account = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(
             predicate: a => a.Id.Equals(accountId)) ?? throw new NotFoundException("Account not found");
 
+        var checkVat = await _vatCheckService.CheckVat(request.TaxCode);
+
+        if (checkVat.Valid == false)
+        {
+            throw new NotFoundException("Tax code not found");
+        }
+
         var order = new Order
         {
             Id = Guid.NewGuid(),
             AccountId = accountId,
+            TaxCode = request.TaxCode,
+            Country = _countryProvider.GetCountry(checkVat.CountryCode).CommonName,
+            Address = request.Address,
             Status = EOrderStatus.Pending,
             CreatedDate = TimeUtil.GetCurrentSEATime(),
             TotalPrice = 0,
