@@ -20,6 +20,7 @@
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
       <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.8" />
+      <PackageReference Include="Nager.Country" Version="4.3.3" />
       <PackageReference Include="PayPalCheckoutSdk" Version="1.0.4" />
       <PackageReference Include="Minio" Version="6.0.5" />
       <PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
