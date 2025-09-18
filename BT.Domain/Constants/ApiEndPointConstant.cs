@@ -47,6 +47,12 @@ public class ApiEndPointConstant
         public const string NewsEndpoint = ApiEndpoint + "/news";
         public const string NewsWithId = NewsEndpoint + "/{id}";    
     }
+    
+    public static class Image
+    {
+        public const string ImageEndpoint = ApiEndpoint + "/images";
+        public const string CreateImage = ImageEndpoint;
+    }
     public static class Transaction
     {
         public const string TransactionEndpoint = ApiEndpoint + "/transactions";
