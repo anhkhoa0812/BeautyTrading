@@ -58,5 +58,6 @@ public class ApiEndPointConstant
         public const string TransactionEndpoint = ApiEndpoint + "/transactions";
         public const string GetAllTransaction = TransactionEndpoint;
         public const string GetTransactionById = TransactionEndpoint + "/{id}";
+        public const string Handle = TransactionEndpoint + "/handle";
     }
 }
