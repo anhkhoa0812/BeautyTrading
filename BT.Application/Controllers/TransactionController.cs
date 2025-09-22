@@ -1,4 +1,6 @@
-﻿using BT.Application.Features.Transactions.Query.GetAllTransaction;
+﻿using System.Text;
+using BT.Application.Features.Transactions.Command.HandlePaymentTransaction;
+using BT.Application.Features.Transactions.Query.GetAllTransaction;
 using BT.Application.Features.Transactions.Query.GetTransactionById;
 using BT.Domain.Constants;
 using BT.Domain.Models.Common;
@@ -45,5 +47,25 @@ public class TransactionController : BaseController<TransactionController>
 
         var apiResponse = await _mediator.Send(query);
         return Ok(apiResponse);
-    } 
+    }
+    
+    [HttpPost(ApiEndPointConstant.Transaction.Handle)]
+    [ProducesResponseType<ApiResponse<Unit>>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ApiResponse>(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> HandleTransaction()
+    {
+        string body;
+        using (var reader = new StreamReader(Request.Body, Encoding.UTF8))
+        {
+            body = await reader.ReadToEndAsync();
+        }
+        
+        var query = new HandlePayPalWebhookCommand()
+        {
+            Body = body,
+            Headers = Request.Headers
+        };
+        var apiResponse = await _mediator.Send(query);
+        return Ok(apiResponse);
+    }    
 }
