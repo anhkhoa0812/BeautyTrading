@@ -7,4 +7,5 @@ public class PayPalSettings
     public string Mode { get; set; }
     public string ReturnUrl { get; set; } = string.Empty;
     public string CancelUrl { get; set; } = string.Empty;
+    public string WebhookId { get; set; } = string.Empty;
 }
