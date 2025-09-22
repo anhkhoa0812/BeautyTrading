@@ -32,8 +32,9 @@ public class GetCategoriesQueryHandler : IRequestHandler<GetCategoriesQuery, Api
                 Id = x.Id,
                 Name = x.Name,
                 Description = x.Description,
+                IsActive = x.IsActive,
                 CreatedDate = x.CreatedDate,
-                LastModifiedDate = x.LastModifiedDate
+                LastModifiedDate = x.LastModifiedDate,
             },
             predicate: x => role == nameof(ERole.Admin) || x.IsActive,
             page: request.Page,
