@@ -1,5 +1,4 @@
 ﻿using BT.Application.Common.Exceptions;
-using BT.Application.Features.Transactions.Command.CreateTransaction;
 using BT.Application.Services.Interface;
 using BT.Domain.Entities;
 using BT.Domain.Enums;
@@ -8,6 +7,7 @@ using BT.Infrastructure.Persistence;
 using BT.Infrastructure.Repositories.Interface;
 using Mediator;
 using Microsoft.EntityFrameworkCore;
+using Nager.Country;
 
 namespace BT.Application.Features.Transactions.Command.CreateTransaction;
 
@@ -17,14 +17,16 @@ public class CreateTransactionCommandHandler : IRequestHandler<CreateTransaction
     private readonly ILogger _logger;
     private readonly IClaimService _claimService;
     private readonly IPayPalService _payPalService;
+    private readonly ICountryProvider _countryProvider;
 
     public CreateTransactionCommandHandler(IUnitOfWork<BeautyTradingContext> unitOfWork, ILogger logger, IClaimService claimService,
-        IPayPalService payPalService)
+        IPayPalService payPalService, ICountryProvider countryProvider)
     {
         _unitOfWork = unitOfWork;
         _logger = logger;
         _claimService = claimService;
         _payPalService = payPalService;
+        _countryProvider = countryProvider;
     }
     public async ValueTask<ApiResponse> Handle(CreateTransactionCommand request, CancellationToken cancellationToken)
     {
@@ -36,6 +38,7 @@ public class CreateTransactionCommandHandler : IRequestHandler<CreateTransaction
             predicate: o => o.Id.Equals(request.OrderId),
             include: o => o.Include(o => o.OrderItems)
                                                 .ThenInclude(oi => oi.ProductVariant)
+                                                    .ThenInclude(pv => pv.Product)
                                             .Include(o => o.OrderItems)
                                                 .ThenInclude(oi => oi.ProductColor)) ?? throw new NotFoundException("Order not found");
         
@@ -50,6 +53,26 @@ public class CreateTransactionCommandHandler : IRequestHandler<CreateTransaction
         var vat = 0;
         var shipping = 0;
 
+        var packageWeight = order.OrderItems.Sum(oi => oi.ProductVariant.Product.PackageWeight * oi.Quantity);
+
+        var country = _countryProvider.GetCountryByName(order.Country);
+        bool isEU = country.Region == Region.Europe;
+
+        if (packageWeight < 20)
+        {
+            shipping = isEU ? 100 : 150;
+        }
+
+        else if (packageWeight >= 20 && packageWeight < 50)
+        {
+            shipping = isEU ? 200 : 250;
+        }
+
+        else
+        {
+            shipping = isEU ? 250 : 300;
+        }
+        
         if (order.Country.Equals("Netherlands"))
         {
             vat = 21;
@@ -61,7 +84,7 @@ public class CreateTransactionCommandHandler : IRequestHandler<CreateTransaction
         {
             Id = Guid.NewGuid(),
             OrderId = order.Id,
-            Amount = order.TotalPrice,
+            Amount = Math.Round(order.TotalPrice + shipping + (vat > 0 ? Math.Round(((order.TotalPrice + shipping) * vat) / 100m, 2) : 0m), 2),
             Status = ETransactionStatus.Pending,
             Currency = request.Currency,
             TransactionReference = url.Code,
