@@ -6,6 +6,7 @@ using BT.Domain.Models.Products;
 using BT.Infrastructure.Persistence;
 using BT.Infrastructure.Repositories.Interface;
 using Mediator;
+using Microsoft.EntityFrameworkCore;
 
 namespace BT.Application.Features.Products.Query.GetProducts;
 
@@ -35,12 +36,13 @@ public class GetProductsQueryHandler : IRequestHandler<GetProductsQuery, ApiResp
                 CreatedDate = x.CreatedDate,
                 LastModifiedDate = x.LastModifiedDate
             },
-            predicate: x => role == nameof(ERole.Admin) || x.ProductVariants.Any(x => x.IsActive),
+            predicate: x => (role == nameof(ERole.Admin) || x.ProductVariants.Any(x => x.IsActive))
+                && (request.CategoryId == null || x.CategoryId == request.CategoryId)
+                && (string.IsNullOrEmpty(request.Name) || x.Name.Contains(request.Name)),
             page: request.Page,
             size: request.Size,
             sortBy: request.SortBy ?? "CreatedDate",
-            isAsc: request.IsAsc,
-            filter: request.Filter
+            isAsc: request.IsAsc
         );
         
         return new ApiResponse

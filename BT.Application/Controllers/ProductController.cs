@@ -9,7 +9,6 @@ using BT.Domain.Constants;
 using BT.Domain.Enums;
 using BT.Domain.Models.Common;
 using BT.Domain.Models.Products;
-using BT.Infrastructure.Filter.Models;
 using BT.Infrastructure.Paginate.Interface;
 using Mediator;
 using Microsoft.AspNetCore.Mvc;
@@ -86,7 +85,8 @@ public class ProductController : BaseController<ProductController>
     [ProducesResponseType<ApiResponse>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType<ApiResponse>(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetProducts([FromQuery] int page = 1, [FromQuery] int size = 30,
-        [FromQuery] string? sortBy = null, [FromQuery] bool isAsc = false, [FromQuery] ProductFilter? filter = null)
+        [FromQuery] string? sortBy = null, [FromQuery] bool isAsc = false, [FromQuery] Guid? categoryId = null,
+        [FromQuery] string? name = null)
     {
         var query = new GetProductsQuery()
         {
@@ -94,7 +94,8 @@ public class ProductController : BaseController<ProductController>
             Size = size,
             SortBy = sortBy,
             IsAsc = isAsc,
-            Filter = filter
+            CategoryId = categoryId,
+            Name = name
         };
         var apiResponse = await _mediator.Send(query);
         return Ok(apiResponse);
