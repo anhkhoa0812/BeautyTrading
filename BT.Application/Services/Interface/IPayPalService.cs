@@ -8,4 +8,6 @@ public interface IPayPalService
     public Task<PayPalCreateOrder> CreateUrlPayment(Order order, string currency, string description, decimal vat, decimal shipping);
     
     Task<bool> VerifyWebhookAsync(string body, IHeaderDictionary headers);
+    
+    Task<string> CaptureOrderAsync(string orderId);
 }

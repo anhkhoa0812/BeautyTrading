@@ -109,6 +109,10 @@ public class PayPalService : IPayPalService
 
     public async Task<bool> VerifyWebhookAsync(string body, IHeaderDictionary headers)
     {
+        using var client = new HttpClient();
+        client.DefaultRequestHeaders.Authorization = 
+            new AuthenticationHeaderValue("Bearer", await GetAccessTokenAsync());
+
         var verifyRequest = new
         {
             auth_algo = headers["PAYPAL-AUTH-ALGO"].ToString(),
@@ -117,43 +121,24 @@ public class PayPalService : IPayPalService
             transmission_sig = headers["PAYPAL-TRANSMISSION-SIG"].ToString(),
             transmission_time = headers["PAYPAL-TRANSMISSION-TIME"].ToString(),
             webhook_id = _payPalSettings.WebhookId,
-            webhook_event = JsonSerializer.Deserialize<JsonElement>(body)
+            webhook_event = JsonDocument.Parse(body).RootElement.Clone()
         };
 
-        _logger.Information($"PayPal verify webhook: {body}");
-        
-        var requestContent = new StringContent(
-            JsonSerializer.Serialize(verifyRequest),
-            Encoding.UTF8,
-            "application/json"
+        var response = await client.PostAsJsonAsync(
+            "https://api-m.paypal.com/v1/notifications/verify-webhook-signature",
+            verifyRequest
         );
-        
-        _logger.Information($"PayPal verify webhook request: {requestContent}");
 
-        var url = "https://api-m.paypal.com/v1/notifications/verify-webhook-signature";
-        var accessToken = await GetAccessTokenAsync();
-        _httpClient.DefaultRequestHeaders.Authorization =
-            new AuthenticationHeaderValue("Bearer", accessToken);
-        
-        _logger.Information($"PayPal verify webhook access token: {accessToken}");
-
-        var response = await _httpClient.PostAsync(url, requestContent);
-        var responseContent = await response.Content.ReadAsStringAsync();
-        
-        _logger.Information($"PayPal verify webhook response: {responseContent}");
-
-        if (!response.IsSuccessStatusCode)
-        {
-            throw new Exception($"PayPal verify webhook failed: {response.StatusCode} - {responseContent}");
-        }
-
-        using var doc = JsonDocument.Parse(responseContent);
+        var doc = await JsonDocument.ParseAsync(await response.Content.ReadAsStreamAsync());
+        _logger.Information($"Webhook verification result:{doc.RootElement.ToString()}");
         if (doc.RootElement.TryGetProperty("verification_status", out var status))
         {
-            return status.GetString()?.Equals("SUCCESS", StringComparison.OrdinalIgnoreCase) == true;
+            var valid = status.GetString()?.Equals("SUCCESS", StringComparison.OrdinalIgnoreCase) == true;
+            _logger.Information($"Webhook verification result:{valid}");
+            return valid;
         }
 
-        return true;
+        return false;
     }
     
     private async Task<string> GetAccessTokenAsync()
@@ -183,4 +168,20 @@ public class PayPalService : IPayPalService
         using var doc = JsonDocument.Parse(content);
         return doc.RootElement.GetProperty("access_token").GetString();
     }
+    
+    public async Task<string> CaptureOrderAsync(string orderId)
+    {
+        var request = new OrdersCaptureRequest(orderId);
+        request.RequestBody(new OrderActionRequest());
+
+        var response = await _client.Execute(request);
+        var result = response.Result<Order>();
+
+        var captureId = result.PurchaseUnits
+            .SelectMany(pu => pu.Payments.Captures)
+            .FirstOrDefault()?.Id;
+
+        return captureId ?? string.Empty;
+    }
+
 }
