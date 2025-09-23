@@ -58,7 +58,7 @@ public class CreateTransactionCommandHandler : IRequestHandler<CreateTransaction
         var country = _countryProvider.GetCountryByName(order.Country);
         bool isEU = country.Region == Region.Europe;
 
-        /*if (packageWeight < 20)
+        if (packageWeight < 20)
         {
             shipping = isEU ? 100 : 150;
         }
@@ -71,7 +71,7 @@ public class CreateTransactionCommandHandler : IRequestHandler<CreateTransaction
         else
         {
             shipping = isEU ? 250 : 300;
-        }*/
+        }
         
         if (order.Country.Equals("Netherlands"))
         {
