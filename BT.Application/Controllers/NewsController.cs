@@ -50,7 +50,7 @@ public class NewsController : BaseController<NewsController>
     }
 
     [CustomAuthorize(ERole.Admin)]
-    [HttpPut(ApiEndPointConstant.News.NewsWithId)]
+    [HttpPatch(ApiEndPointConstant.News.NewsWithId)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]

@@ -88,7 +88,8 @@ public class CreateProductCommandValidator : AbstractValidator<CreateProductComm
                 var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
 
                 return extension.Equals(".mp4");
-            }).WithMessage("Video has an invalid file type. Allowed types are: .mp4");
+            }).WithMessage("Video has an invalid file type. Allowed types are: .mp4")
+            .When(x => x.Video != null);
         RuleForEach(x => x.Images).SetValidator(new CreateProductImageRequestValidator());
         
     }

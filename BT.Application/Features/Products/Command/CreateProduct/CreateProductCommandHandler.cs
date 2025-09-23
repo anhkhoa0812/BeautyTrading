@@ -57,11 +57,13 @@ public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand,
             var videoUrl = await _uploadService.UploadVideoAsync(request.Video);
             product.VideoUrl = videoUrl;
         }
-        var mainImageUrl = await _uploadService.UploadImageAsync(request.MainImage);
-        product.ImageUrl = mainImageUrl;
-
-        var bannerImageUrl = await _uploadService.UploadImageAsync(request.BannerImage);
-        product.BannerUrl = bannerImageUrl;
+        
+        var mainImageTask = _uploadService.UploadImageAsync(request.MainImage);
+        var bannerImageTask = _uploadService.UploadImageAsync(request.BannerImage);
+        
+        var imageResults = await Task.WhenAll(mainImageTask, bannerImageTask);
+        product.ImageUrl = imageResults[0];
+        product.BannerUrl = imageResults[1];
         if (!product.IsHasVariants)
         {
             if(request.Currency != null && request.Price != null && request.Stock != null)
