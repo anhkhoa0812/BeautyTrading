@@ -35,4 +35,8 @@
       <ProjectReference Include="..\BT.Domain\BT.Domain.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Filter\Models\" />
+    </ItemGroup>
+
 </Project>
