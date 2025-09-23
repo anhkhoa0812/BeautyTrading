@@ -54,12 +54,15 @@ public class TransactionController : BaseController<TransactionController>
     [ProducesResponseType<ApiResponse>(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> HandleTransaction()
     {
+        Request.EnableBuffering();
+
         string body;
-        using (var reader = new StreamReader(Request.Body, Encoding.UTF8))
+        using (var reader = new StreamReader(Request.Body, Encoding.UTF8, leaveOpen: true))
         {
             body = await reader.ReadToEndAsync();
+            Request.Body.Position = 0;
         }
-        
+
         var query = new HandlePayPalWebhookCommand()
         {
             Body = body,
