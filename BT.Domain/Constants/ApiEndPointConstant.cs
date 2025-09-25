@@ -59,5 +59,6 @@ public class ApiEndPointConstant
         public const string GetAllTransaction = TransactionEndpoint;
         public const string GetTransactionById = TransactionEndpoint + "/{id}";
         public const string Handle = TransactionEndpoint + "/handle";
+        public const string Cancel = TransactionEndpoint + "/cancel";
     }
 }

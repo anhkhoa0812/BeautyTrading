@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using BT.Application.Features.Transactions.Command.CancelPaymentTransaction;
 using BT.Application.Features.Transactions.Command.HandlePaymentTransaction;
 using BT.Application.Features.Transactions.Query.GetAllTransaction;
 using BT.Application.Features.Transactions.Query.GetTransactionById;
@@ -70,5 +71,24 @@ public class TransactionController : BaseController<TransactionController>
         };
         var apiResponse = await _mediator.Send(query);
         return Ok(apiResponse);
-    }    
+    }  
+    
+    [HttpPost(ApiEndPointConstant.Transaction.Cancel)]
+    [ProducesResponseType<ApiResponse<Unit>>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ApiResponse>(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> CancelTransaction()
+    {
+        var orderId = Request.Query["orderId"].ToString();
+
+        var query = new CancelPayPalTransactionCommand()
+        {
+            TransactionReference = orderId
+        };
+        var apiResponse = await _mediator.Send(query);
+        if (apiResponse)
+        {
+            return Redirect("https://quanly-dimpos.web.app/cancel");
+        }
+        return Redirect("https://quanly-dimpos.web.app/failed");
+    }  
 }
