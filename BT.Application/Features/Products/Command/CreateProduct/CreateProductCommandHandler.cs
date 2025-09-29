@@ -111,9 +111,9 @@ public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand,
 
         if (request.Images != null && request.Images.Any())
         {
-            foreach (var imageRequest in request.Images)
+            foreach (var image in request.Images)
             {
-                var imageUrl = await _uploadService.UploadImageAsync(imageRequest.Image);
+                var imageUrl = await _uploadService.UploadImageAsync(image);
                 product.ProductImages?.Add(new ProductImage()
                 {
                     Id = Guid.CreateVersion7(),

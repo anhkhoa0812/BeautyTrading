@@ -90,7 +90,14 @@ public class CreateProductCommandValidator : AbstractValidator<CreateProductComm
                 return extension.Equals(".mp4");
             }).WithMessage("Video has an invalid file type. Allowed types are: .mp4")
             .When(x => x.Video != null);
-        RuleForEach(x => x.Images).SetValidator(new CreateProductImageRequestValidator());
+        RuleForEach(x => x.Images)
+            .Cascade(CascadeMode.Stop)
+            .Must(file =>
+            {
+                var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
+
+                return _allowedImageExtensions.Contains(extension);
+            }).WithMessage("Image has an invalid file type. Allowed types are: " + string.Join(", ", _allowedImageExtensions));
         
     }
 }
@@ -110,23 +117,5 @@ public class CreateProductVariantRequestValidator : AbstractValidator<CreateProd
             .MaximumLength(50).WithMessage("Variant currency must not exceed 50 characters");
         RuleFor(x => x.Stock)
             .GreaterThanOrEqualTo(0).WithMessage("Variant stock must be greater than or equal to 0");
-    }
-}
-public class CreateProductImageRequestValidator : AbstractValidator<CreateProductImageRequest>
-{
-    private static readonly string[] _allowedExtensions = new[]
-    {
-        ".jpeg", ".png", ".jpg", ".gif", ".bmp", ".webp"
-    };
-    public CreateProductImageRequestValidator()
-    {
-        RuleFor(x => x.Image)
-            .Cascade(CascadeMode.Stop)
-            .Must(file =>
-            {
-                var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
-
-                return _allowedExtensions.Contains(extension);
-            }).WithMessage("Product image has an invalid file type. Allowed types are: " + string.Join(", ", _allowedExtensions));
     }
 }
